@@ -1,2 +1,59 @@
 # Split-unique-and-duplicate-records-into-two-different-targets-Using-informatica-PowerCenter-
 This is a project use case scenario to master informatica PowerCenter
+________________ ETL project using Informatica PowerCenter (use case scenario) _____________________
+ 
+  ________________[Shaker Sami]____[Data Engineer]____[shaker.samiy@gmail.com]____[+201036497664  +201119396597]____ 
+
+Last Update Date:17 May 2026                 
+========================================================================================
+Business Requirement:
+		        "Split unique and duplicate records into two different targets"
+========================================================================================
+Data Source:
+	employeeData.xlsx
+========================================================================================	   
+	
+Steps:
+	1- Insert data into the database
+		A- Using import option in database
+	2- Check the date in the data source table:
+		SELECT * FROM employeedatasource;
+	3- In informatica PowerCenter Designer:
+		A- In source analyzer:
+			load the source table [EMPLOYEEDATASOURCE]
+	B- In Target Designer:
+		get the target tables [DUPLICATEEMPLOYEEDATA] [UNIQUEEMPLOYEEDATA]
+	C- In mapping designer:
+		create a new map [m_EDSP]        --EDSP:Employee Data Set Project
+	4- In mapping designer:
+		A- get source table  [EMPLOYEEDATASOURCE]
+		B- get targe tables  [DUPLICATEEMPLOYEEDATA] [UNIQUEEMPLOYEEDATA]
+	5- Create Sorter transformation[SRT_EDSP]:
+		A- add the port from source qualifier into the sorter [SRT_EDSP]
+		B- in ports tab:
+			sort by employee_id Asc.
+	6- Create expression transformation[EXP_EDSP]:
+		A- add all ports from Sorter[SRT_EDSP] to expression [EXP_EDSP]
+		B- create new port [Dummy] as output port:
+			set the value for this port '1'
+	7- Create Aggregator transformation [AGG_EDSP]:
+		A- add all ports from expression [EXP_EDSP] to Aggreagtor[AGG_EDSP] except [Dummy] port
+		B- create a new port [rowCount] COUNT(employee_id)
+			make sure to group by employee_id
+	8- Create joiner transformation[JNR_EDSP]:
+		in properties tab check sorter input option
+		A- connect all ports from aggregator [AGG_EDSP] to joiner [JNR_EDSP]
+		B- add all ports from the expression [EXP_EDSP] to joiner [JNR_EDSP]
+		C- in condition tab:
+			employee_id = employee_id1
+	9- Create Router transformation[RTR_EDSP]:
+		A- Connect all distinct ports from joiner [JNR_EDSP] to Router [RTR_EDSP]
+		B- create two groups [UniqueRecords] [DuplicateRecords]:
+			for unique records condition:  [Dummy] = [rowCount]
+			for duplicate records condition:  [Dummy] != [rowCount]
+	10 - connect all the output ports of unique in router[RTR_EDSP] (except [Dummy]) to ports of the unique table[UNIQUEEMPLOYEEDATA]
+	12- connect all the output ports of duplicate in router[RTR_EDSP] (except [Dummy]) to ports of the duplicate table [DUPLICATEEMPLOYEEDATA]
+	10- Create a workflow [wf_EDSP]
+	11- Run the workflow [wf_EDSP]
+	12- Check the output result in the database:
+	
