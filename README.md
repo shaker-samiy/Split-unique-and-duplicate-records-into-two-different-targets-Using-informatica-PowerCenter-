@@ -4,16 +4,16 @@ ________________ ETL project using Informatica PowerCenter (use case scenario) _
  
   ________________[Shaker Sami]____[Data Engineer]____[shaker.samiy@gmail.com]____[+201036497664  +201119396597]____ 
 
-Last Update Date:17 May 2026                 
+## Last Update Date:17 May 2026                 
 ========================================================================================
-Business Requirement:
+## Business Requirement:
 		        "Split unique and duplicate records into two different targets"
 ========================================================================================
-Data Source:
+## Data Source:
 	employeeData.xlsx
 ========================================================================================	   
 	
-Steps:
+## Steps:
 	1- Insert data into the database
 		A- Using import option in database
 	2- Check the date in the data source table:
